@@ -1,50 +1,54 @@
 'use client'
+import { authClient } from '@/lib/auth-client';
 import { AlertDialog, Button } from '@heroui/react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 
-const DeleteModal = ({ objData }) => {
-    const { _id, destinationName } = objData;
+const BookingDeleteAlert = ({ bookingId }) => {
+    const router = useRouter();
 
-    const handleDelete = async() => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${_id}`, {
+    const handleCancel = async () => {
+        const { data: tokenData } = await authClient.token();
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
             method: 'DELETE',
             headers: {
-                'content-type':'application/json',
-            },
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData?.token}`
+            }
         });
-        const data = await res.json();
-        console.log(data);
-        redirect('/destinations');
+        const data = res.json();
+        // console.log(data);
+
+        router.push('/myBooking');
     }
 
 
     return (
         <div>
             <AlertDialog>
-                <Button className="rounded-none border-2 hover:text-red-500" variant="outline">Delete</Button>
-
+                <Button variant="danger">Cancel</Button>
                 <AlertDialog.Backdrop>
                     <AlertDialog.Container>
                         <AlertDialog.Dialog className="sm:max-w-100">
                             <AlertDialog.CloseTrigger />
                             <AlertDialog.Header>
                                 <AlertDialog.Icon status="danger" />
-                                <AlertDialog.Heading>Delete Destination permanently?</AlertDialog.Heading>
+                                <AlertDialog.Heading>Cancel Booking permanently?</AlertDialog.Heading>
                             </AlertDialog.Header>
                             <AlertDialog.Body>
                                 <p>
-                                    This will permanently delete <strong className='text-blue-500'>{destinationName}</strong> and all of its
+                                    This will permanently delete <strong>My Awesome Project</strong> and all of its
                                     data. This action cannot be undone.
                                 </p>
                             </AlertDialog.Body>
                             <AlertDialog.Footer>
                                 <Button slot="close" variant="tertiary">
-                                    Cancel
+                                    close
                                 </Button>
-                                <Button onClick={handleDelete} slot="close" variant="danger">
-                                    Delete Project
+                                <Button onClick={handleCancel} slot="close" variant="danger">
+                                    Cancel Booking
                                 </Button>
                             </AlertDialog.Footer>
                         </AlertDialog.Dialog>
@@ -55,4 +59,5 @@ const DeleteModal = ({ objData }) => {
     );
 };
 
-export default DeleteModal;
+export default BookingDeleteAlert;
+

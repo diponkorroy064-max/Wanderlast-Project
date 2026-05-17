@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDownRight } from '@gravity-ui/icons';
 
+
 const DestinationCard = ({ destination }) => {
     const { imageUrl, price, destinationName, duration, country } = destination;
     

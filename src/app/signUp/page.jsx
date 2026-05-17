@@ -25,7 +25,7 @@ const SignUpPage = () => {
         console.log("sign up response", data, error);
         
         if (error) {
-            toast.error("Sign up failed " + error.messege);
+            toast.error("Sign up failed " + error.message);
         }
         else if (data) {
             toast.success("Sign up successfull! Verify your Email")
